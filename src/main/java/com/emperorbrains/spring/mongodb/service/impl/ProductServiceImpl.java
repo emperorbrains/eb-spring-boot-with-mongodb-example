@@ -2,6 +2,9 @@ package com.emperorbrains.spring.mongodb.service.impl;
 
 import javax.validation.Valid;
 
+import org.springframework.data.mongodb.core.query.Query;
+import org.springframework.data.mongodb.core.query.TextCriteria;
+import org.springframework.data.mongodb.core.query.TextQuery;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
@@ -24,26 +27,26 @@ import lombok.extern.slf4j.Slf4j;
 public class ProductServiceImpl extends EmperorBrainsService implements IProductService {
 
 	@Override
-	public ResponseEntity<?> getNoteById() {
-		return new ResponseEntity<GenericRes<?>>(ResponseUtils.success(repoServ.getNoteRepository().findAll()),
+	public ResponseEntity<?> getProductById() {
+		return new ResponseEntity<GenericRes<?>>(ResponseUtils.success(repoServ.getProductRepository().findAll()),
 				HttpStatus.OK);
 	}
 
 	@Override
-	public ResponseEntity<?> getNoteById(String noteId) {
+	public ResponseEntity<?> getProductById(String productId) {
 		try {
-			log.info("PocServiceImpl findById :- {}", noteId);
-			return new ResponseEntity<GenericRes<?>>(ResponseUtils.success(checkNoteByIdExting(noteId)), HttpStatus.OK);
+			log.info("PocServiceImpl findById :- {}", productId);
+			return new ResponseEntity<GenericRes<?>>(ResponseUtils.success(checkProductByIdExting(productId)), HttpStatus.OK);
 		} catch (Exception e) {
 			return new ResponseEntity<GenericRes<?>>(ResponseUtils.error(e.getMessage()), HttpStatus.BAD_REQUEST);
 		}
 	}
 
 	@Override
-	public ResponseEntity<?> createNote(Product note) {
+	public ResponseEntity<?> createProduct(Product product) {
 		try {
-			log.info("data : - {}", note.toString());
-			return new ResponseEntity<GenericRes<?>>(ResponseUtils.success(repoServ.getNoteRepository().save(note)),
+			log.info("data : - {}", product.toString());
+			return new ResponseEntity<GenericRes<?>>(ResponseUtils.success(repoServ.getProductRepository().save(product)),
 					HttpStatus.OK);
 		} catch (Exception e) {
 			return new ResponseEntity<GenericRes<?>>(ResponseUtils.error(e.getMessage()), HttpStatus.BAD_REQUEST);
@@ -51,10 +54,10 @@ public class ProductServiceImpl extends EmperorBrainsService implements IProduct
 	}
 
 	@Override
-	public ResponseEntity<?> updateNote(String noteId, @Valid Product noteDetails) {
+	public ResponseEntity<?> updateProduct(String productId, @Valid Product productDetails) {
 		try {
-			Product note = checkNoteByIdExting(noteId);
-			return new ResponseEntity<GenericRes<?>>(ResponseUtils.success(repoServ.getNoteRepository().save(note)),
+			Product product = checkProductByIdExting(productId);
+			return new ResponseEntity<GenericRes<?>>(ResponseUtils.success(repoServ.getProductRepository().save(productDetails)),
 					HttpStatus.OK);
 		} catch (Exception e) {
 			return new ResponseEntity<GenericRes<?>>(ResponseUtils.error(e.getMessage()), HttpStatus.BAD_REQUEST);
@@ -63,17 +66,28 @@ public class ProductServiceImpl extends EmperorBrainsService implements IProduct
 	}
 
 	@Override
-	public ResponseEntity<?> deleteNote(String noteId) {
+	public ResponseEntity<?> deleteProduct(String productId) {
 		try {
-			Product note = checkNoteByIdExting(noteId);
-			repoServ.getNoteRepository().delete(note);
-			return new ResponseEntity<GenericRes<?>>(ResponseUtils.success("Note Deleted"), HttpStatus.OK);
+			Product product = checkProductByIdExting(productId);
+			repoServ.getProductRepository().delete(product);
+			return new ResponseEntity<GenericRes<?>>(ResponseUtils.success("Product Deleted"), HttpStatus.OK);
 		} catch (Exception e) {
 			return new ResponseEntity<GenericRes<?>>(ResponseUtils.error(e.getMessage()), HttpStatus.BAD_REQUEST);
 		}
 	}
 
-	public Product checkNoteByIdExting(String noteId) throws Exception {
-		return repoServ.getNoteRepository().findById(noteId).orElseThrow(() -> new Exception("Note Id Not Found"));
+	public Product checkProductByIdExting(String productId) throws Exception {
+		return repoServ.getProductRepository().findById(productId).orElseThrow(() -> new Exception("Product Id Not Found"));
+	}
+
+	@Override
+	public ResponseEntity<?> searchProduct(String search) {
+		try {
+			TextCriteria criteria = TextCriteria.forDefaultLanguage()
+					  .matchingAny(search);
+			return new ResponseEntity<GenericRes<?>>(ResponseUtils.success(repoServ.getProductRepository().findAllBy(criteria)), HttpStatus.OK);
+		} catch (Exception e) {
+			return new ResponseEntity<GenericRes<?>>(ResponseUtils.error(e.getMessage()), HttpStatus.BAD_REQUEST);
+		}
 	}
 }

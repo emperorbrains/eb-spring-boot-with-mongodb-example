@@ -14,33 +14,35 @@ import com.emperorbrains.spring.mongodb.persistence.Product;
 public interface IProductService {
 
 	/**
-	 * @return Notes
+	 * @return Products
 	 */
-	public ResponseEntity<?> getNoteById();
+	public ResponseEntity<?> getProductById();
 
 	/**
-	 * @param noteId
-	 * @return Note
+	 * @param productId
+	 * @return Product
 	 */
-	public ResponseEntity<?> getNoteById(String noteId);
+	public ResponseEntity<?> getProductById(String productId);
 
 	/**
-	 * @param note
+	 * @param product
 	 * @return
 	 */
-	public ResponseEntity<?> createNote(Product note);
+	public ResponseEntity<?> createProduct(Product product);
 
 	/**
-	 * @param noteId
-	 * @param noteDetails
+	 * @param productId
+	 * @param productDetails
 	 * @return
 	 */
-	public ResponseEntity<?> updateNote(String noteId, @Valid Product noteDetails);
+	public ResponseEntity<?> updateProduct(String productId, @Valid Product productDetails);
 
 	/**
-	 * @param noteId
+	 * @param productId
 	 * @return
 	 */
-	public ResponseEntity<?> deleteNote(String noteId);
+	public ResponseEntity<?> deleteProduct(String productId);
+
+	public ResponseEntity<?> searchProduct(String search);
 
 }

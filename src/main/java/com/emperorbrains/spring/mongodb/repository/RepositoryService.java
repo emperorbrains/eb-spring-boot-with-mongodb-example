@@ -17,6 +17,6 @@ import lombok.Data;
 public class RepositoryService {
 
 	@Autowired
-	private ProductRepository noteRepository;
+	private ProductRepository productRepository;
 
 }
