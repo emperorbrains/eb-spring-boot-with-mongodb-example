@@ -1,0 +1,22 @@
+server:
+  port: ${server_port:8085}
+spring:
+  application:
+    name: emperorbrains-springboot-mongodb
+  profiles:
+    active: "local"
+  servlet:
+    multipart:
+      enabled: true
+      max-file-size:
+        200MB
+      max-request-size:
+        215MB
+management:
+  endpoints:
+    web.exposure.include: "*"
+  endpoint:
+    health:
+      show-details: ALWAYS
+  security:
+    enabled: false
